@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  source_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: yourpassword
+    volumes:
+      - ./pg-source-data:/var/lib/postgresql/data
+    networks:
+      - pg_net
+    ports:
+      - 5433:5432
+
+  analytics_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: yourpassword
+    volumes:
+      - ./pg-analytics-data:/var/lib/postgresql/data
+    networks:
+      - pg_net
+    ports:
+      - 5434:5432
+
+networks:
+  pg_net:
+    driver: bridge
+
