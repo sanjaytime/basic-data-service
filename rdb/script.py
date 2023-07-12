@@ -3,6 +3,9 @@ from pyspark.sql import SparkSession
 # Create a spark session
 spark = SparkSession.builder \
     .appName('Parquet to DB') \
+    .config("spark.jars", "/home/postgresql-42.2.5.jar") \
+    .config("spark.driver.extraClassPath", "/home/postgresql-42.2.5.jar") \
+    .config("spark.executor.extraClassPath", "/home/postgresql-42.2.5.jar")\
     .getOrCreate()
 
 # Read the parquet file
@@ -16,7 +19,7 @@ properties = {
 }
 
 # Write the DataFrame to PostgreSQL table "items"
-df.write.jdbc(url="jdbc:postgresql://host.docker.internal:5432/postgres_db", table="items", mode="append", properties=properties)
+df.write.jdbc(url="jdbc:postgresql://host.docker.internal:5432/mydatabase", table="items", mode="append", properties=properties)
 
 spark.stop()
 

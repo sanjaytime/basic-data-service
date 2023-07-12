@@ -2,24 +2,19 @@ FROM jupyter/pyspark-notebook
 
 USER root
 
-# Copy JDBC Driver into the image
-#COPY postgresql-42.6.0.jar /home/jovyan/driver/postgresql-42.6.0.jar
-COPY postgresql-42.6.0.jar /home/
-
-# Add the JDBC driver to the classpath
-ENV SPARK_CLASSPATH=/home/postgresql-42.2.5.jar
-
-
-
-# Copy spark script
 COPY script.py /home/
 
+
+
+# Download and copy driver
+RUN wget  https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
+RUN mv postgresql-42.2.5.jar /home/postgresql-42.2.5.jar
 
 # Copy parquet files
 COPY parquet/clicks.parquet.gzip /home/jovyan/clicks.parquet.gzip
 
+ENV CLASSPATH="/home/"
 
 
 
-CMD ["spark-submit", "/home/script.py"]
-
+CMD ["spark-submit", "--driver-class-path", "/home/postgresql-42.2.5.jar", "--jars", "/home/postgresql-42.2.5.jar", "/home/script.py"]
